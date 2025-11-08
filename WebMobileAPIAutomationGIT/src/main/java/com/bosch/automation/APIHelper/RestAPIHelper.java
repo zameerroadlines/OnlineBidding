@@ -72,7 +72,7 @@ public class  RestAPIHelper extends BaseClass {
     public Map getHeaders() {
         Map<String,Object> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");
-        
+        headers.put("Authorization", "Bearer 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");
         return headers;
     }
 
