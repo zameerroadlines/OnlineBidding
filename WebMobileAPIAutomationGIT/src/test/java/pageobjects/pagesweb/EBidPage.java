@@ -394,7 +394,7 @@ public class EBidPage extends DriverActions {
 //
 //            // Locate the row
 //            WebElement row = rows.get(rowIndex);
-        for (Map<String, Object> selectedRow : finalSelection) {
+        for (Map<String, Object> selectedRow : matchedRows) {
             int rowIndex = (int) selectedRow.get("rowIndex");
             String destination = (String) selectedRow.get("destination");
             String bid = (String) selectedRow.get("bid");
