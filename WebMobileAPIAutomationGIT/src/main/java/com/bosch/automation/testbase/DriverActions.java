@@ -1209,7 +1209,11 @@ public class DriverActions extends BaseClass{
     public void enterTextAfterClickFast(WebElement byElement, String text)
     {
         try {
-            byElement.click();
+
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            js.executeScript("arguments[0].scrollIntoView(true);", byElement);
+
+            byElement.clear();
             byElement.sendKeys(text);
             byElement.sendKeys(Keys.TAB);
             log("Entered bid amount : "+text);

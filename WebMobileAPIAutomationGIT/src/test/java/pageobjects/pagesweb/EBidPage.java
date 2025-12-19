@@ -52,7 +52,7 @@ public class EBidPage extends DriverActions {
 
     public void selectPlantAndSearchUntilFound() {
         hardWait(4000);
-        click(byShowSearchButton,"Search button", 380);
+        click(byShowSearchButton,"Search button", 1200000);
         hardWait(2000);
         click(byinputplant,"Plant arrow", 25);
         hardWait(2000);
@@ -362,7 +362,7 @@ public class EBidPage extends DriverActions {
 
     private static boolean isDestinationInArray(String destination, String[] destinationArray) {
         for (String dest : destinationArray) {
-            if (dest.equalsIgnoreCase(destination)) {
+            if (dest.trim().equalsIgnoreCase(destination)) {
                 return true;
             }
         }
