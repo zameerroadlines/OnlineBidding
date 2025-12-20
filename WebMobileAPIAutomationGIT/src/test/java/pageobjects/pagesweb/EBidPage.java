@@ -345,7 +345,7 @@ public class EBidPage extends DriverActions {
                             finalSelection.add(new HashMap<>(matchedRow));
                             count++;
                             log("Selected " + seqDestination + " for " + category + " (Total selected: " + count + "/" + limit + ")");
-                            break; // move to next destination in sequence
+                            if (count >= limit) break;
                         }
                     }
                 }
@@ -394,7 +394,7 @@ public class EBidPage extends DriverActions {
 //
 //            // Locate the row
 //            WebElement row = rows.get(rowIndex);
-        for (Map<String, Object> selectedRow : matchedRows) {
+        for (Map<String, Object> selectedRow : finalSelection) {
             int rowIndex = (int) selectedRow.get("rowIndex");
             String destination = (String) selectedRow.get("destination");
             String bid = (String) selectedRow.get("bid");
