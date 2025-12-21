@@ -5,10 +5,14 @@ import com.bosch.automation.APIHelper.RestAPIHelper;
 import com.bosch.automation.testbase.DriverActions;
 import com.bosch.automation.testdataproperties.ColumnNames;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
+import java.time.Duration;
 import java.util.*;
 
 public class EBidPage extends DriverActions {
@@ -369,6 +373,25 @@ public class EBidPage extends DriverActions {
         return false;
     }
 
+    public void waitUntilLoaderAppearAndDisappear() {
+        try {
+            // Hardcoded title 'Please wait' and timeout 3000 milliseconds
+            String loaderXPath = "//*[@title='Please wait']";  // XPath with hardcoded title
+            long timeoutMillis = 30000;  // Hardcoded timeout in milliseconds
+
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(timeoutMillis));
+
+            // Wait for loader to appear (visible state)
+            WebElement loader = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(loaderXPath)));
+
+            // Wait until the loader disappears (invisible state)
+            wait.until(ExpectedConditions.invisibilityOf(loader));
+
+        } catch (TimeoutException e) {
+            // Do nothing, just continue execution if loader does not appear
+        }
+    }
+
     public void enterBid(){
         log("matched rows: "+matchedRows);
         log("Final selection of rows: "+finalSelection);
@@ -378,12 +401,14 @@ public class EBidPage extends DriverActions {
         WebElement table = driver.findElement(By.id("__xmlview0--idUtclVCVendorAssignmentTable"));
         List<WebElement> rows = table.findElements(By.xpath(".//tr[contains(@id, '__item7-')]"));
 
-        By bySearchTime = By.xpath("//*[text()='Starts in 0:0:"+testData.get(columnNames.SearchTime)+"']");
+        By bySearchTime = By.xpath("//*[text()='Starts in 0:0:"+testData.get(columnNames.SearchTime)+"'] | //*[contains(text(), 'Expires in')]");
 
         if(findElementPresenceReturnBool(bySearchTime,600)){
             log("New milli sec added in test data to wait for search"+testData.get(columnNames.WaitTimeInMilliAfterSearch));
             hardWait(Integer.parseInt(testData.get(columnNames.WaitTimeInMilliAfterSearch)));
             click(bySearchButton,"Search button",4);
+            waitUntilLoaderAppearAndDisappear();
+            findElementPresenceReturnBool(By.xpath("//*[contains(text(), 'Expires in')]"), 30);
         }
         // Second pass: Enter bids for matched rows
 //        for (Map<String, Object> matchedRow : matchedRows) {
@@ -401,11 +426,14 @@ public class EBidPage extends DriverActions {
             WebElement row = rows.get(rowIndex);
             // XPaths for bid amount input fields
             By byBidAmountInput = By.xpath(".//td[6]//*[text()='" + destination + "']/parent::td/following-sibling::td//input[contains(@disabled,'disabled')]");
-            By byBidAmountInputActivated = By.xpath(".//td[6]//*[text()='" + destination + "']/parent::td/following-sibling::td//input");
+            By byBidAmountInputActivated = By.xpath(".//td[6]//*[text()='" + destination + "']/parent::td/following-sibling::td//input[not(contains(@disabled, 'disabled'))]");
             log("destination xpath of " + destination + " : " + byBidAmountInputActivated);
             // Ensure the input field is active and enter the bid
 
             if (findElementAbsenceReturnBool(byBidAmountInput, 600)) {
+
+                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(100));
+                wait.until(ExpectedConditions.elementToBeClickable(byBidAmountInputActivated));
 
                 WebElement input = row.findElement(byBidAmountInputActivated);
                 log("destination xpath of Entering bid "+input);
