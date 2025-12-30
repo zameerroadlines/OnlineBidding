@@ -32,7 +32,7 @@ public class EBidPage extends DriverActions {
 
     By byTableRecords = By.xpath("//tbody//tr[contains(@id,'idUtclVCVendorAssignmentTable-')]");
 
-    By byTableFirstRecord = By.xpath("//td[text()='No data']");
+    By byTableFirstRecord = By.xpath("//tbody//tr[contains(@id,'idUtclVCVendorAssignmentTable-')]/td[contains(@id,'idUtclVCVendorAssignmentTable-0_cell0')]");
 
     By bySaveBid = By.xpath("//*[contains(text(),'Save')]/ancestor::button");
 
@@ -60,13 +60,11 @@ public class EBidPage extends DriverActions {
        // click(byFirstShipOption,"First option", 15);
 
         hardWait(2000);
-        while (findAndReturnElementsCount(byTableFirstRecord) > 0) {
+        while (findAndReturnElementsCount(byTableFirstRecord) == 0) {
             click(bySearchButton,"Search button", 120);
-            log("Waiting for the Data...No Destinations available for Bidding :");
-
             hardWait(Integer.parseInt(testData.get(columnNames.PlantSearchWaitMilli)));
         }
-       // verifyResult(findAndReturnElementsCount(byTableFirstRecord) > 0, "Record shown successfully, number of records : " + findAndReturnElementsCount(byTableRecords));
+        verifyResult(findAndReturnElementsCount(byTableFirstRecord) > 0, "Record shown successfully, number of records : " + findAndReturnElementsCount(byTableRecords));
     }
 
     public void selectPlantAndSearchUntilFoundExisting() {
@@ -99,36 +97,23 @@ public class EBidPage extends DriverActions {
 
         String[] destinationBulkArray1=null,destinationBulkArray2=null,destinationBagArray1=null,destinationBagArray2=null,destinationBagArray3=null;
 
-        if(testData.get(columnNames.LimitBulk1)!=null|| !testData.get(columnNames.LimitBulk1).isEmpty()) {
+        if(testData.get(columnNames.LimitBulk1)!=null&& !testData.get(columnNames.LimitBulk1).isEmpty()) {
              destinationBulkArray1 = destinationBulkSet1.split(",");
         }
-        if(testData.get(columnNames.LimitBulk2)!=null|| !testData.get(columnNames.LimitBulk2).isEmpty()) {
+        if(testData.get(columnNames.LimitBulk2)!=null&& !testData.get(columnNames.LimitBulk2).isEmpty()) {
              destinationBulkArray2 = destinationBulkSet2.split(",");
         }
-        if(testData.get(columnNames.LimitBag1)!=null|| !testData.get(columnNames.LimitBag1).isEmpty()) {
+        if(testData.get(columnNames.LimitBag1)!=null&& !testData.get(columnNames.LimitBag1).isEmpty()) {
             destinationBagArray1 = destinationBagSet1.split(",");
         }
-        if(testData.get(columnNames.LimitBag2)!=null|| !testData.get(columnNames.LimitBag2).isEmpty()) {
+        if(testData.get(columnNames.LimitBag2)!=null&& !testData.get(columnNames.LimitBag2).isEmpty()) {
              destinationBagArray2 = destinationBagSet2.split(",");
         }
-        if(testData.get(columnNames.LimitBag3)!=null|| !testData.get(columnNames.LimitBag3).isEmpty()) {
+        if(testData.get(columnNames.LimitBag3)!=null&& !testData.get(columnNames.LimitBag3).isEmpty()) {
              destinationBagArray3 = destinationBagSet3.split(",");
         }
 
-
         try{
-       //     By bySearchTime = By.xpath("//*[text()='Starts in 0:0:" + testData.get(columnNames.SearchTimeBeforeRows) + "']");
-
-// Wait up to 600 seconds (or as needed) for the element to appear
-//            if (findElementPresenceReturnBool(bySearchTime, 600)) {
-//                log("Auction start time matched: " + testData.get(columnNames.SearchTimeBeforeRows) + " seconds remaining.");
-//                click(bySearchButton,"Search button",4);
-//                log("Search button clicked after our timings matched : ");
-//
-//            } else {
-//                log("Auction start time element not found within wait time. Skipping data collection.");
-//                return false; // Or handle as needed (exit early, throw exception, etc.)
-//            }
             WebElement table = driver.findElement(By.id("__xmlview0--idUtclVCVendorAssignmentTable"));
 
         List<WebElement> rows = table.findElements(By.xpath(".//tr[contains(@id, '__item7-')]"));
@@ -341,11 +326,13 @@ public class EBidPage extends DriverActions {
                                 ? (String) matchedRow.get("matchedBag")
                                 : (String) matchedRow.get("matchedBulk");
 
-                        if (category.equals(rowCategory) && seqDestination.equalsIgnoreCase((String) matchedRow.get("destination"))) {
+                        if (category.equals(rowCategory) && seqDestination.equalsIgnoreCase((String) matchedRow.get("destination"))&&
+                                count < limit) {
                             finalSelection.add(new HashMap<>(matchedRow));
                             count++;
                             log("Selected " + seqDestination + " for " + category + " (Total selected: " + count + "/" + limit + ")");
-                            break; // move to next destination in sequence
+//                            break; // move to next destination in sequence
+                            if (count >= limit) break;
                         }
                     }
                 }

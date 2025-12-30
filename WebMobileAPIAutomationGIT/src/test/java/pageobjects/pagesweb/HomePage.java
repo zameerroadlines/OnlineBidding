@@ -15,7 +15,7 @@ public class HomePage extends DriverActions {
         this.testData=testData;
         columnNames = new ColumnNames();
     }
-    By byEBiddingTile = By.xpath("//span[@id=\"__tile19-title-inner\"]");
+    By byEBiddingTile = By.xpath("//*[contains(text(),'E-Bidding')]");
 
     public void clickBiddingTile(){
         click(byEBiddingTile," Bidding Option",2);

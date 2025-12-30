@@ -50,7 +50,7 @@ public class ColumnNames {
 
     public  String PlantSearchWaitMilli = "PlantSearchWaitMilli";
 
-    public String SearchTimeBeforeRows ="SearchTimeBeforeRows";
+
     public  String URL = "URL";
 
 
