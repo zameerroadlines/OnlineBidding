@@ -52,7 +52,7 @@ public class EBidPage extends DriverActions {
 
     public void selectPlantAndSearchUntilFound() {
         hardWait(4000);
-        click(byShowSearchButton,"Search button", 380);
+        click(byShowSearchButton,"Search button", 380000);
         hardWait(2000);
         click(byinputplant,"Plant arrow", 25);
         hardWait(2000);
@@ -62,11 +62,9 @@ public class EBidPage extends DriverActions {
         hardWait(2000);
         while (findAndReturnElementsCount(byTableFirstRecord) > 0) {
             click(bySearchButton,"Search button", 120);
-            log("Waiting for the Data...No Destinations available for Bidding :");
-
             hardWait(Integer.parseInt(testData.get(columnNames.PlantSearchWaitMilli)));
         }
-       // verifyResult(findAndReturnElementsCount(byTableFirstRecord) > 0, "Record shown successfully, number of records : " + findAndReturnElementsCount(byTableRecords));
+//        verifyResult(findAndReturnElementsCount(byTableFirstRecord) > 0, "Record shown successfully, number of records : " + findAndReturnElementsCount(byTableRecords));
     }
 
     public void selectPlantAndSearchUntilFoundExisting() {
@@ -117,18 +115,18 @@ public class EBidPage extends DriverActions {
 
 
         try{
-       //     By bySearchTime = By.xpath("//*[text()='Starts in 0:0:" + testData.get(columnNames.SearchTimeBeforeRows) + "']");
+            By bySearchTime = By.xpath("//*[text()='Starts in 0:0:" + testData.get(columnNames.SearchTimeBeforeRows) + "']");
 
 // Wait up to 600 seconds (or as needed) for the element to appear
-//            if (findElementPresenceReturnBool(bySearchTime, 600)) {
-//                log("Auction start time matched: " + testData.get(columnNames.SearchTimeBeforeRows) + " seconds remaining.");
-//                click(bySearchButton,"Search button",4);
-//                log("Search button clicked after our timings matched : ");
-//
-//            } else {
-//                log("Auction start time element not found within wait time. Skipping data collection.");
-//                return false; // Or handle as needed (exit early, throw exception, etc.)
-//            }
+            if (findElementPresenceReturnBool(bySearchTime, 6000)) {
+                log("Auction start time matched: " + testData.get(columnNames.SearchTimeBeforeRows) + " seconds remaining.");
+                click(bySearchButton,"Search button",4);
+                log("Search button clicked after our timings matched : ");
+
+            } else {
+                log("Auction start time element not found within wait time. Skipping data collection.");
+                return false; // Or handle as needed (exit early, throw exception, etc.)
+            }
             WebElement table = driver.findElement(By.id("__xmlview0--idUtclVCVendorAssignmentTable"));
 
         List<WebElement> rows = table.findElements(By.xpath(".//tr[contains(@id, '__item7-')]"));
